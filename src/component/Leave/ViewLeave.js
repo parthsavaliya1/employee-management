@@ -3,13 +3,20 @@ import { toast } from "react-toastify";
 import { deleteLeaveById } from "../../api";
 import Popup from "../Popup";
 import { formateDate } from "../../utils";
+import {  useDispatch } from "react-redux";
+import { addEmployeeLeaveList } from "../redux";
 
-function ViewLeave({employeeLeave,  setIsViewLeave}) {
+function ViewLeave({  setIsViewLeave,employeesLeaveData}) {
     const [leaveId, setLeaveId] = useState(null)
+    const dispatch = useDispatch();
+
     const handleDeleteLeave = () => {
         deleteLeaveById(leaveId).then((resp) => {
             if(resp?.status === 200) {
                 setLeaveId(null)
+                const findIndex = employeesLeaveData?.findIndex((e) => e.leaveId === leaveId)
+                employeesLeaveData.splice(findIndex, 1);
+                dispatch(addEmployeeLeaveList([...employeesLeaveData]));
                 toast.success(resp?.message)
             }
         }).catch((error) => toast.error('Error when delete leave'))
@@ -39,9 +46,9 @@ function ViewLeave({employeeLeave,  setIsViewLeave}) {
                 </tr>
               </thead>
               <tbody>
-                {employeeLeave.length > 0 ? (
-                  employeeLeave.map((leave, i) => (
-                    <tr key={leave.id}>
+                {employeesLeaveData?.length > 0 ? (
+                  employeesLeaveData.map((leave, i) => (
+                    <tr key={leave.leaveId}>
                       <td>{i + 1}</td>
                       <td>{leave.leaveType}</td>
                       <td>{leave.reason}</td>

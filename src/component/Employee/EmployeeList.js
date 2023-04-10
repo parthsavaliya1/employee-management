@@ -5,9 +5,8 @@ import { formateDate } from '../../utils';
 
 function EmployeeList({setDeletedId,deleteId,  handleEdit, handleDelete,handleAddLave,handleViewLeave,employees }) {
 
-
     return (
-        <div className='contain-table' key={employees?.id}>
+        <div className='contain-table'>
             <table className='table-main'>
                 <thead>
                     <tr>
@@ -29,7 +28,7 @@ function EmployeeList({setDeletedId,deleteId,  handleEdit, handleDelete,handleAd
                 <tbody>
                     {employees.length > 0 ? (
                         employees.map((employee, i) => (
-                            <tr key={employee.id}>
+                            <tr key={employee.userId}>
                                 <td>{i + 1}</td>
                                 <td>{employee.firstName}</td>
                                 <td>{employee.lastName}</td>

@@ -108,12 +108,11 @@ function AddEmployee({ setIsAdding, employees }) {
         <label htmlFor="phoneNumber">Phone Number</label>
         <input
           id="phoneNumber"
-          type="text"
-           pattern="\d*" 
+          type="number"
           name="phoneNumber"
           placeholder="Enter PhoneNumber Here"
-          maxlength={10}
-          minlength={0}
+          maxLength={10}
+          minLength={0}
           value={phoneNumber}
           onChange={(e) => handleSetField(e)}
         />

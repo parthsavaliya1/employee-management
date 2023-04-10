@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { createLeave } from "../../api";
-
-export default function AddLeave({ setIsAddLeave, selectedEmployee }) {
+import { connect, useDispatch } from "react-redux";
+import { addEmployeeLeaveList } from "../redux";
+ 
+function AddLeave({ setIsAddLeave, selectedEmployee ,employeesLeave}) {
   const [formData, setFormData] = useState({
     leaveType: "",
     reason: "",
     startDate: "",
     endDate: "",
   });
+  const dispatch = useDispatch();
 
   const textInput = useRef(null);
 
@@ -41,7 +44,10 @@ export default function AddLeave({ setIsAddLeave, selectedEmployee }) {
       .then((resp) => {
         if (resp?.data) {
           setIsAddLeave(false);
+          employeesLeave?.push(resp?.data);
+          dispatch(addEmployeeLeaveList(employeesLeave))
           toast.success("Add Leave Successfully");
+
         }
       })
       .catch((error) => toast.error("Something went wrong!"));
@@ -110,3 +116,10 @@ export default function AddLeave({ setIsAddLeave, selectedEmployee }) {
     </div>
   );
 }
+
+
+const mapStateToProps = (state) => ({
+  employeesLeave: state.employees?.employeeLeave,
+});
+
+export default connect(mapStateToProps)(AddLeave);

@@ -104,6 +104,8 @@ function EditEmployee({ selectedEmployee, setIsEditing,employees }) {
           id="phoneNumber"
           type="number"
           name="phoneNumber"
+          minLength={0}
+          maxLength={10}
           value={phoneNumber}
           onChange={(e) => handleSetField(e)}
         />

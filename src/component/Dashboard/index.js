@@ -6,17 +6,18 @@ import List from "../Employee/EmployeeList";
 import Add from "../Employee/AddEmployee";
 import Edit from "../Employee/EditEmployee";
 
-import { useDispatch } from "react-redux";
-import { addEmployeeList, deleteEmployee } from "../redux";
+import { connect, useDispatch } from "react-redux";
+import { addEmployeeLeaveList, addEmployeeList, deleteEmployee } from "../redux";
 import {
   deleteEmployeeById,
   getAllEmployeeData,
+  getAllLeaveData,
   getLeaveByUserId,
 } from "../../api";
 import AddLeave from "../Leave/AddLeave";
 import ViewLeave from "../Leave/ViewLeave";
 
-function Dashboard() {
+function Dashboard({employeesLeaveData,employeeData}) {
   const dispatch = useDispatch();
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -25,19 +26,26 @@ function Dashboard() {
   const [isEditing, setIsEditing] = useState(false);
   const [isAddLeave, setIsAddLeave] = useState(false)
   const [isViewLeave, setIsViewLeave] = useState(null)
-  const [employeeData, setEmployeeData] = useState([]);
-  const [employeeLeave, setEmployeeLeave] = useState([])
 
 
   useEffect(()=> {
     getAllEmployeeList();
+    getAllLeaveList();
   },[])
 
   const getAllEmployeeList=() => {
     getAllEmployeeData().then((resp) => {
       dispatch(addEmployeeList(resp.data));
-      setEmployeeData(resp?.data);
-    }).catch(error => toast.error('Error while fetch data'));
+    }).catch(error => toast.error('Error while fetching employee'));
+  }
+
+  const getAllLeaveList =() => {
+    getAllLeaveData().then(resp=> {
+      if(resp?.data) 
+      {
+        dispatch(addEmployeeLeaveList(resp.data));
+      }
+    }).catch(error => toast.error('Error while fetching leave'))
   }
 
   const handleEdit = (id) => {
@@ -51,7 +59,6 @@ function Dashboard() {
     setSelectedEmployee(employee);
     getLeaveByUserId(id).then((resp) => {
       if(resp?.data) {
-        setEmployeeLeave(resp?.data)
         setIsViewLeave(true)
       }
     }).catch((error) => toast.error('Something went wrong!'))
@@ -91,9 +98,16 @@ function Dashboard() {
         <Edit selectedEmployee={selectedEmployee} setIsEditing={setIsEditing} />
       )}
       {isAddLeave && <AddLeave selectedEmployee={selectedEmployee} setIsAddLeave={setIsAddLeave}/>}
-      {isViewLeave && <ViewLeave selectedEmployee={selectedEmployee} employeeLeave={employeeLeave} setIsViewLeave={setIsViewLeave}/>}
+      {isViewLeave && <ViewLeave selectedEmployee={selectedEmployee} employeesLeaveData={employeesLeaveData} setIsViewLeave={setIsViewLeave}/>}
     </div>
   );
 }
 
-export default Dashboard;
+
+const mapStateToProps = (state) => ({
+  employeesLeaveData: state.employees?.employeeLeave,
+  employeeData:state.employees?.employees
+});
+
+export default connect(mapStateToProps)(Dashboard);
+
