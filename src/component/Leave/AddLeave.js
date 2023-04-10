@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { createLeave } from "../../api";
 import { connect, useDispatch } from "react-redux";
 import { addEmployeeLeaveList } from "../redux";
+import moment from "moment";
  
 function AddLeave({ setIsAddLeave, selectedEmployee ,employeesLeave}) {
   const [formData, setFormData] = useState({
@@ -39,6 +40,11 @@ function AddLeave({ setIsAddLeave, selectedEmployee ,employeesLeave}) {
       endDate,
       userId: selectedEmployee?.userId,
     };
+    console.log(moment(endDate))
+    if(moment(endDate).isBefore(moment(startDate))) {
+      toast.error('Please select end date equal to or greater than start date')
+      return;
+    }
 
     createLeave(leaveData)
       .then((resp) => {

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { connect, useDispatch } from "react-redux";
 import { addEmployee, addEmployeeList } from "../redux";
 import { createEmployee } from "../../api";
+import moment from "moment";
 
 function AddEmployee({ setIsAdding, employees }) {
   const dispatch = useDispatch();
@@ -36,6 +37,11 @@ function AddEmployee({ setIsAdding, employees }) {
     const isUnique = employees?.filter((em) => em.email ===newEmployee?.email || em.phoneNumber === newEmployee?.phoneNumber )
     if(isUnique?.length > 0) {
         toast.error("Employee already exists with same email or phone");
+        return;
+    }
+
+    if(moment(birthDate).isAfter(moment())) {
+      toast.error("Please select valid birth date");
         return;
     }
 

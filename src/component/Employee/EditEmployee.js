@@ -4,6 +4,7 @@ import { connect, useDispatch } from "react-redux";
 import { addEmployeeList, updateEmployee } from "../redux";
 import { updateEmployeeById } from "../../api";
 import { formateDate } from "../../utils";
+import moment from "moment";
 
 function EditEmployee({ selectedEmployee, setIsEditing,employees }) {
   const dispatch = useDispatch();
@@ -34,6 +35,11 @@ function EditEmployee({ selectedEmployee, setIsEditing,employees }) {
     if(isUnique?.length > 0) {
         toast.error("Employee already exists with same email or phone");
         return;
+    }
+
+    if(moment(birthDate).isAfter(moment())) {
+      toast.error("Please select valid birth date");
+      return;
     }
 
     updateEmployeeById(selectedEmployee?.userId,updateEmployeeData).then((resp) => {

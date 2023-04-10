@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 /* Employee API */
 
 export const getAllEmployeeData = async () => {
